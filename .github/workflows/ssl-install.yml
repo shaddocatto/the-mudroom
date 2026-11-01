@@ -24,9 +24,16 @@ jobs:
             echo "Using cert dir: $CERTDIR"
             ls -la "$CERTDIR"
 
-            CERT="$(cat "$CERTDIR/mudroom.chat.cer")"
-            KEY="$(cat "$CERTDIR/mudroom.chat.key")"
-            CAB="$(cat "$CERTDIR/ca.cer")"
+            # cPanel's install_ssl documentation requires cert/key/cabundle to be
+            # URI-encoded, because uapi URL-decodes parameter values internally
+            # (it's designed to also be called as an HTTP GET). Raw PEM text has
+            # literal "+" characters from base64, which get silently turned into
+            # spaces during that decoding -- corrupting the base64 exactly as seen
+            # in the "Invalid base64" errors (which happened identically for both
+            # EC and RSA keys, so it was never actually a key-type issue).
+            CERT_ENC="$(perl -MURI::Escape -0777 -ne 'print uri_escape($_)' "$CERTDIR/mudroom.chat.cer")"
+            KEY_ENC="$(perl -MURI::Escape -0777 -ne 'print uri_escape($_)' "$CERTDIR/mudroom.chat.key")"
+            CAB_ENC="$(perl -MURI::Escape -0777 -ne 'print uri_escape($_)' "$CERTDIR/ca.cer")"
 
             UAPI_BIN="$(command -v uapi || echo /usr/local/cpanel/bin/uapi)"
-            "$UAPI_BIN" SSL install_ssl domain='mudroom.chat' cert="$CERT" key="$KEY" cabundle="$CAB"
+            "$UAPI_BIN" SSL install_ssl domain='mudroom.chat' cert="$CERT_ENC" key="$KEY_ENC" cabundle="$CAB_ENC"
