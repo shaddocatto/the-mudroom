@@ -17,7 +17,12 @@ jobs:
           port: ${{ secrets.CPANEL_SSH_PORT || 22 }}
           script: |
             set -ex
-            "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please
+            # The cert was already successfully issued in a prior run. acme.sh
+            # exits non-zero (status 2) when it decides renewal isn't due yet,
+            # which would otherwise abort this script before reaching the
+            # install step below -- tolerate that "skip" exit and continue,
+            # since the existing cert files in CERTDIR are exactly what we need.
+            "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please || true
 
             CERTDIR="$HOME/.acme.sh/mudroom.chat"
             if [ ! -d "$CERTDIR" ]; then CERTDIR="$HOME/.acme.sh/mudroom.chat_ecc"; fi
