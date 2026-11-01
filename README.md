@@ -54,9 +54,10 @@ variables → Actions**:
 |---|---|
 | `CPANEL_HOST` | Your server's hostname or IP |
 | `CPANEL_USERNAME` | cPanel SSH username |
-| `CPANEL_SSH_KEY` | Private key for SSH (add the matching public key in cPanel → SSH Access) |
+| `CPANEL_SSH_KEY` | Private key for SSH (add the matching public key in cPanel → SSH Access, then authorize it) |
+| `CPANEL_SSH_PASSPHRASE` | Passphrase for the key above (cPanel's key generator requires a strong passphrase — `appleboy/ssh-action` accepts it directly) |
 | `CPANEL_APP_PATH` | Absolute path to the Node.js app folder (e.g. `/home/youruser/the-mudroom`) |
-| `CPANEL_SSH_PORT` | Optional, defaults to 22 |
+| `CPANEL_SSH_PORT` | Your host's SSH port — check cPanel → SSH Access → Access Details; shared hosting often uses a non-standard port, not 22 |
 
 This mirrors the auto-deploy pattern already in use on other projects — adjust
 the activation path if your cPanel's Node.js virtualenv layout differs
