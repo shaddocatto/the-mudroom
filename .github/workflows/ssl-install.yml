@@ -19,8 +19,8 @@ jobs:
             set -ex
             "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
-            CERTDIR="$HOME/.acme.sh/mudroom.chat_ecc"
-            if [ ! -d "$CERTDIR" ]; then CERTDIR="$HOME/.acme.sh/mudroom.chat"; fi
+            CERTDIR="$HOME/.acme.sh/mudroom.chat"
+            if [ ! -d "$CERTDIR" ]; then CERTDIR="$HOME/.acme.sh/mudroom.chat_ecc"; fi
             echo "Using cert dir: $CERTDIR"
             ls -la "$CERTDIR"
 

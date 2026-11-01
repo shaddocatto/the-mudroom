@@ -20,4 +20,4 @@ jobs:
             if [ ! -d "$HOME/.acme.sh" ]; then
               curl https://get.acme.sh | sh -s email=claude@shessogeek.com
             fi
-            "$HOME/.acme.sh/acme.sh" --issue --dns -d mudroom.chat -d www.mudroom.chat --yes-I-know-dns-manual-mode-enough-go-ahead-please || true
+            "$HOME/.acme.sh/acme.sh" --issue --dns -d mudroom.chat -d www.mudroom.chat --keylength 2048 --yes-I-know-dns-manual-mode-enough-go-ahead-please || true
