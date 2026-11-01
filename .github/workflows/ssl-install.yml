@@ -1,0 +1,32 @@
+name: SSL - Complete and Install Certificate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Renew (complete) cert and install via uapi
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          passphrase: ${{ secrets.CPANEL_SSH_PASSPHRASE }}
+          port: ${{ secrets.CPANEL_SSH_PORT || 22 }}
+          script: |
+            set -ex
+            "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --yes-I-know-dns-manual-mode-enough-go-ahead-please
+
+            CERTDIR="$HOME/.acme.sh/mudroom.chat_ecc"
+            if [ ! -d "$CERTDIR" ]; then CERTDIR="$HOME/.acme.sh/mudroom.chat"; fi
+            echo "Using cert dir: $CERTDIR"
+            ls -la "$CERTDIR"
+
+            CERT="$(cat "$CERTDIR/mudroom.chat.cer")"
+            KEY="$(cat "$CERTDIR/mudroom.chat.key")"
+            CAB="$(cat "$CERTDIR/ca.cer")"
+
+            UAPI_BIN="$(command -v uapi || echo /usr/local/cpanel/bin/uapi)"
+            "$UAPI_BIN" SSL install_ssl domain='mudroom.chat' cert="$CERT" key="$KEY" cabundle="$CAB"
