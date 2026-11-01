@@ -17,7 +17,7 @@ jobs:
           port: ${{ secrets.CPANEL_SSH_PORT || 22 }}
           script: |
             set -ex
-            "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --yes-I-know-dns-manual-mode-enough-go-ahead-please
+            "$HOME/.acme.sh/acme.sh" --renew --dns -d mudroom.chat --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
             CERTDIR="$HOME/.acme.sh/mudroom.chat"
             if [ ! -d "$CERTDIR" ]; then CERTDIR="$HOME/.acme.sh/mudroom.chat_ecc"; fi

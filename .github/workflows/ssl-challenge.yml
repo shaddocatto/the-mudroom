@@ -20,4 +20,9 @@ jobs:
             if [ ! -d "$HOME/.acme.sh" ]; then
               curl https://get.acme.sh | sh -s email=claude@shessogeek.com
             fi
-            "$HOME/.acme.sh/acme.sh" --issue --dns -d mudroom.chat -d www.mudroom.chat --keylength 2048 --yes-I-know-dns-manual-mode-enough-go-ahead-please || true
+            # This domain's CAA records only authorize pki.goog, sectigo.com, and
+            # letsencrypt.org. acme.sh defaults to ZeroSSL, which CAA blocks and which
+            # caused orders to hang forever in "Pending". Clear any stale ZeroSSL order
+            # state and switch explicitly to the Let's Encrypt CA (which CAA allows).
+            rm -rf "$HOME/.acme.sh/mudroom.chat" "$HOME/.acme.sh/mudroom.chat_ecc"
+            "$HOME/.acme.sh/acme.sh" --issue --dns -d mudroom.chat -d www.mudroom.chat --keylength 2048 --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please || true
