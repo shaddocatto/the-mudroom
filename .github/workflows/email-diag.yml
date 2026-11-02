@@ -1,0 +1,26 @@
+name: Email DNS Diagnostics (temporary)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query cPanel email auth / MX config
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          passphrase: ${{ secrets.CPANEL_SSH_PASSPHRASE }}
+          port: ${{ secrets.CPANEL_SSH_PORT || 22 }}
+          script: |
+            echo "--- list_mxs ---"
+            uapi --user=${{ secrets.CPANEL_USERNAME }} Email list_mxs domain='mudroom.chat' || true
+            echo "--- validate_current_dkims ---"
+            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_dkims domain='mudroom.chat' || true
+            echo "--- validate_current_spfs ---"
+            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_spfs domain='mudroom.chat' || true
+            echo "--- validate_current_spf (singular fallback) ---"
+            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_spf domain='mudroom.chat' || true
