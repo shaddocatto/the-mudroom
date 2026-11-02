@@ -31,7 +31,7 @@ export function ProfileProvider({ children }) {
   }, [refresh]);
 
   return (
-    <ProfileContext.Provider value={{ profile, loading: profile === undefined, refresh }}>
+    <ProfileContext.Provider value={{ profile, loading: profile === undefined, refresh, setProfile }}>
       {children}
     </ProfileContext.Provider>
   );

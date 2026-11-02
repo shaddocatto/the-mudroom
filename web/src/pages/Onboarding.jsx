@@ -6,7 +6,7 @@ import { INVOLVEMENT_LEVELS, CONNECTION_APPETITES, INTERESTS, FAITH_INTEREST } f
 const STEPS = ['name', 'involvement', 'appetite', 'profile'];
 
 export default function Onboarding() {
-  const { refresh } = useProfile();
+  const { setProfile } = useProfile();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -38,7 +38,7 @@ export default function Onboarding() {
     setSaving(true);
     setError(null);
     try {
-      await api.post('/profiles/me', {
+      const saved = await api.post('/profiles/me', {
         display_name: displayName.trim(),
         involvement_level: involvement,
         connection_appetite: appetite,
@@ -51,7 +51,9 @@ export default function Onboarding() {
           interests: interestsPublic,
         },
       });
-      await refresh();
+      // The save call already returns the saved profile, so use it directly
+      // rather than firing a second request that could itself fail or hang.
+      setProfile(saved);
     } catch (err) {
       setError(err.message);
       setSaving(false);
