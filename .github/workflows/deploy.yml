@@ -26,7 +26,7 @@ jobs:
             source /home/${{ secrets.CPANEL_USERNAME }}/nodevenv/$APP_BASENAME/18/bin/activate
             npm ci --omit=dev
             cd web
-            npm ci
+            npm ci --include=dev
             npm run build
             cd ..
             touch tmp/restart.txt
