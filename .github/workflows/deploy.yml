@@ -30,16 +30,3 @@ jobs:
             npm run build
             cd ..
             touch tmp/restart.txt
-            sleep 6
-            echo "--- disk usage ---"
-            df -h . 2>&1 || true
-            echo "--- app dir log candidates ---"
-            find . -maxdepth 2 -iname "*.log" -newer tmp/restart.txt -mmin -5 2>/dev/null
-            find "$HOME/logs" -iname "*$(basename $(pwd))*" 2>/dev/null
-            echo "--- stderr.log tail ---"
-            tail -n 60 stderr.log 2>/dev/null || echo "no stderr.log at app root"
-            echo "--- passenger log search ---"
-            find "$HOME" -maxdepth 4 -iname "*passenger*log*" 2>/dev/null | while read -r f; do
-              echo "=== $f ==="
-              tail -n 40 "$f" 2>/dev/null
-            done
