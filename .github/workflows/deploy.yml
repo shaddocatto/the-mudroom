@@ -25,4 +25,8 @@ jobs:
             APP_BASENAME=$(basename ${{ secrets.CPANEL_APP_PATH }})
             source /home/${{ secrets.CPANEL_USERNAME }}/nodevenv/$APP_BASENAME/18/bin/activate
             npm ci --omit=dev
+            cd web
+            npm ci
+            npm run build
+            cd ..
             touch tmp/restart.txt
