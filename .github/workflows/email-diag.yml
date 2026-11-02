@@ -17,10 +17,10 @@ jobs:
           port: ${{ secrets.CPANEL_SSH_PORT || 22 }}
           script: |
             echo "--- list_mxs ---"
-            uapi --user=${{ secrets.CPANEL_USERNAME }} Email list_mxs domain='mudroom.chat' || true
+            uapi Email list_mxs domain='mudroom.chat' || true
             echo "--- validate_current_dkims ---"
-            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_dkims domain='mudroom.chat' || true
+            uapi EmailAuth validate_current_dkims domain='mudroom.chat' || true
             echo "--- validate_current_spfs ---"
-            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_spfs domain='mudroom.chat' || true
+            uapi EmailAuth validate_current_spfs domain='mudroom.chat' || true
             echo "--- validate_current_spf (singular fallback) ---"
-            uapi --user=${{ secrets.CPANEL_USERNAME }} EmailAuth validate_current_spf domain='mudroom.chat' || true
+            uapi EmailAuth validate_current_spf domain='mudroom.chat' || true
